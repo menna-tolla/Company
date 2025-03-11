@@ -14,13 +14,14 @@ namespace Company.BLL.Repositores
     public class DepartmentRepository : IDepartmentRepository
     {
         private readonly CompanyDbContext _context; // Null
-        public DepartmentRepository()
+
+        //Ask CLR Create Object From CompanyDbContext
+        public DepartmentRepository(CompanyDbContext context)
         {
-            _context = new CompanyDbContext();
+            _context = context;
         }
         public IEnumerable<Department> GetAll()
         {
-            using CompanyDbContext context = new CompanyDbContext();
             return _context.Departments.ToList();
         }
         public Department? Get(int id)
