@@ -14,7 +14,7 @@ namespace Company.DAL.Models
 
         public string Name { set; get; }
 
-        public DateTime CreatAt { set; get; }
+        public DateTime CreateAt { set; get; }
 
 
     }
