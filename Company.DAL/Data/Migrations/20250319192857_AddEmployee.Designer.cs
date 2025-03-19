@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Company.DAL.Data.Migratons
+namespace Company.DAL.Data.Migrations
 {
     [DbContext(typeof(CompanyDbContext))]
-    [Migration("20250319095727_AddEmployeeTable")]
-    partial class AddEmployeeTable
+    [Migration("20250319192857_AddEmployee")]
+    partial class AddEmployee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,7 +66,8 @@ namespace Company.DAL.Data.Migratons
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatAt");
 
                     b.Property<string>("Email")
                         .IsRequired()

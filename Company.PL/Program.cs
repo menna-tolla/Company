@@ -14,6 +14,8 @@ namespace Company.PL
             // Add services to the container.
             builder.Services.AddControllersWithViews();// Register Built-in MVC Services
             builder.Services.AddScoped<IDepartmentRepository , DepartmentRepository>(); //Allow ID For DepartmentRepository
+            builder.Services.AddScoped<IEmplyeeRepository, EmplyeeRepository>(); //Allow ID For EmplyeeRepository
+
 
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {

@@ -17,9 +17,5 @@ namespace Company.BLL.Repositores
             
         }
        
-
-
-
-
     }
 }

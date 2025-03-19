@@ -9,6 +9,12 @@ namespace Company.DAL.Models
 {
     public class Department : BaseEntity
     {
+        //public int Id { get; set; }
+        public string Name { set; get; }
+
+        [Column("CreatAt")]
+        public DateTime CreateAt { set; get; }
+
         public string Code { set; get; }
     }
 }
