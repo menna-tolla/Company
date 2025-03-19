@@ -1,20 +1,19 @@
 ﻿using Company.BLL.Interfaces;
-using Company.BLL.Repositores;
 using Company.DAL.Models;
 using Company.PL.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Plugins;
+
 
 namespace Company.PL.Controllers
 {
-    public class DepartmentController : Controller
+    public class EmployeeController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IEmplyeeRepository _emplyeeRepository;
 
         //Ask CLR Create Object From DepartmentRepository
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public EmployeeController(IEmplyeeRepository emplyeeRepository)
         {
-            _departmentRepository = departmentRepository;
+            _emplyeeRepository = emplyeeRepository;
         }
 
         //----------------------Index-----------------------
@@ -22,9 +21,9 @@ namespace Company.PL.Controllers
         [HttpGet] // get 
         public IActionResult Index()
         {
-            var departments = _departmentRepository.GetAll();
+            var employee = _emplyeeRepository.GetAll();
 
-            return View(departments);
+            return View(employee);
         }
 
         //----------------------Create-----------------------
@@ -37,18 +36,27 @@ namespace Company.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Create (CreateDepartmentDto model)
+        public IActionResult Create(CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-                var department = new Department()
+                var employee = new Employee()
                 {
-                    Code = model.Code,
                     Name = model.Name,
+                    Salary = model.Salary,
+                    Address = model.Address,
+                    IsActive = model.IsActive,
+                    IsDeleted = model.IsDeleted,
+                    Age = model.Age,
+
+                    HiringDate = model.HiringDate,
+                    Phone = model.Phone,
                     CreateAt = model.CreateAt,
+                    Email = model.Email,
+
                 };
 
-                var count = _departmentRepository.Add(department);
+                var count = _emplyeeRepository.Add(employee);
 
                 if (count > 0)
                 {
@@ -76,14 +84,14 @@ namespace Company.PL.Controllers
         #endregion
 
         [HttpGet] // get 
-        public IActionResult Details(int? id , string viewName= "Details")
+        public IActionResult Details(int? id, string viewName = "Details")
         {
             if (id is null) return BadRequest("InValilld Id");
 
-            var department = _departmentRepository.Get(id.Value);
-            if (department is null) return NotFound(new { StatusCode = 404, mssage = $"Department with id = {id} is not found" });
+            var employee = _emplyeeRepository.Get(id.Value);
+            if (employee is null) return NotFound(new { StatusCode = 404, mssage = $"Employee with id = {id} is not found" });
 
-            return View(viewName , department);
+            return View(viewName, employee);
         }
 
         //----------------------Edit-----------------------
@@ -104,21 +112,20 @@ namespace Company.PL.Controllers
         [HttpGet] // get 
         public IActionResult Edit(int? id)
         {
-           
-            return Details( id , "Edit");
+            return Details(id, "Edit");
         }
 
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit( [FromRoute] int id,Department department)
+        public IActionResult Edit([FromRoute] int id, Employee employee)
         {
-            if (id != department.Id) return BadRequest();
+            if (id != employee.Id) return BadRequest();
 
-            var count = _departmentRepository.Update(department);
+            var count = _emplyeeRepository.Update(employee);
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (count > 0)
                 {
@@ -126,7 +133,7 @@ namespace Company.PL.Controllers
                 }
             }
 
-            return View(department);
+            return View( employee);
         }
 
         //----------------------Delete-----------------------
@@ -147,18 +154,18 @@ namespace Company.PL.Controllers
         [HttpGet] // get 
         public IActionResult Delete(int? id)
         {
-            return Details(id , "Delete");
+            return Details(id, "Delete");
         }
 
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Department department)
+        public IActionResult Delete([FromRoute] int id, Employee employee)
         {
-            if (id != department.Id) return BadRequest();
+            if (id != employee.Id) return BadRequest();
 
-            var count = _departmentRepository.Delete(department);
+            var count = _emplyeeRepository.Delete(employee);
 
             if (ModelState.IsValid)
             {
@@ -168,10 +175,9 @@ namespace Company.PL.Controllers
                 }
             }
 
-            return View(department);
+            return View(employee);
         }
 
-        //---------------------------------------------
-
+        //--------------------
     }
 }

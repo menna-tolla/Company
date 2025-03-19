@@ -63,7 +63,8 @@ namespace Company.DAL.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatAt");
 
                     b.Property<string>("Email")
                         .IsRequired()

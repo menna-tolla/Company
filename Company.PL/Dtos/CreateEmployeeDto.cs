@@ -1,25 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Company.DAL.Models
+namespace Company.PL.Dtos
 {
-    public class Employee : BaseEntity
+    public class CreateEmployeeDto
     {
+        [Required(ErrorMessage = "Name is Requied")]
         public string Name { get; set; }
+        [Range(25, 60)]
         public int? Age { get; set; }
+
+        [DataType(DataType.Currency)]
         public decimal Salary { get; set; }
+
+        [Phone]
         public string Phone { get; set; }
         public string Address { get; set; }
+
+        [DataType(DataType.EmailAddress, ErrorMessage = "Email is not valid")]
         public string Email { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
 
-        [Column("CreatAt")]
-        public DateTime CreateAt { set; get; }
+        [DisplayName("Hiring Date")]
         public DateTime HiringDate { get; set; }
+        public DateTime CreateAt { get; set; }
     }
 }

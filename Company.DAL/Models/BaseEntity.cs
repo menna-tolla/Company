@@ -10,10 +10,6 @@ namespace Company.DAL.Models
     public class BaseEntity
     {
         public int Id { get; set; }
-        public string Name { set; get; }
-
-        [Column("CreatAt")]
-        public DateTime CreateAt { set; get; }
 
     }
 }
