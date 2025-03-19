@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Company.DAL.Models
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
         public int? Age { get; set; }
         public decimal Salary { get; set; }
         public string Phone { get; set; }
@@ -19,6 +17,5 @@ namespace Company.DAL.Models
         public bool IsDeleted { get; set; }
 
         public DateTime HiringDate { get; set; }
-        public DateTime CreateAt { get; set; } 
     }
 }
