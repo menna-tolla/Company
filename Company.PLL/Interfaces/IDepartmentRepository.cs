@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Company.BLL.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository : IGenaricRepository <Department>
     {
-        IEnumerable<Department> GetAll();
+        //IEnumerable<Department> GetAll();
 
-        Department? Get(int Id);
+        //Department? Get(int Id);
 
-        int Add(Department department);
+        //int Add(Department model);
 
-        int Update(Department department);
+        //int Update(Department model);
 
-        int Delete(Department department);
+        //int Delete(Department model);
 
     }
 }
