@@ -10,11 +10,13 @@ namespace Company.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IEmplyeeRepository _employeeRepository;
 
         //Ask CLR Create Object From DepartmentRepository
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(IDepartmentRepository departmentRepository , IEmplyeeRepository employeeRepository)
         {
             _departmentRepository = departmentRepository;
+            _employeeRepository = employeeRepository;
         }
 
         //----------------------Index-----------------------
@@ -30,6 +32,7 @@ namespace Company.PL.Controllers
         //----------------------Create-----------------------
 
         [HttpGet]
+        //[ValidateAntiForgeryToken]
         public IActionResult Create()
         {
             return View();
@@ -37,9 +40,15 @@ namespace Company.PL.Controllers
 
 
         [HttpPost]
+
         public IActionResult Create (CreateDepartmentDto model)
         {
-            if (ModelState.IsValid)
+            Console.WriteLine("POST Request Received");
+            Console.WriteLine($"Model: Code={model.Code}, Name={model.Name}, CreateAt={model.CreateAt}");
+
+            try
+            {
+                if (ModelState.IsValid)
             {
                 var department = new Department()
                 {
@@ -54,6 +63,12 @@ namespace Company.PL.Controllers
                 {
                     return RedirectToAction(nameof(Index));
                 }
+            }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error: {ex.Message}");
             }
 
             return View(model);
@@ -90,7 +105,7 @@ namespace Company.PL.Controllers
 
         #region Edit
         //[HttpGet] // get 
-        //public IActionResult Edit(int ? id)
+        //public IActionResult Edit(int? id)
         //{
         //    if (id is null) return BadRequest("InValilld Id");
 
@@ -99,13 +114,60 @@ namespace Company.PL.Controllers
 
         //    return View(department);
         //}
+
+
+        //[HttpGet] // get 
+        //public IActionResult Edit(int? id)
+        //{
+
+        //    return Details(id, "Edit");
+        //}
         #endregion
+
+
+
+        //[HttpGet] // get 
+        //public IActionResult Edit(int? id)
+        //{
+        //    if (id is null) return BadRequest("InValilld Id");
+
+        //    var employee = _employeeRepository.Get(id.Value);
+
+        //    ViewData["employee"] = employee;
+
+        //    var department = _departmentRepository.Get(id.Value);
+
+        //    if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
+
+        //    var departmentDto = new CreateDepartmentDto()
+        //    {
+        //        Name = department.Name,
+        //        CreateAt = department.CreateAt,
+        //    };
+        //    return View(departmentDto);
+        //}
+
 
         [HttpGet] // get 
         public IActionResult Edit(int? id)
         {
-           
-            return Details( id , "Edit");
+            if (id is null) return BadRequest("InValilld Id");
+
+            var department = _departmentRepository.Get(id.Value);
+
+            if (department is null) return NotFound(new { StatusCode = 404, mssage = $"Department with id = {id} is not found" });
+
+            var employeeDto = new CreateDepartmentDto()
+            {
+                Name = department.Name,
+               
+                CreateAt = department.CreateAt,
+                
+                Code=department.Code
+
+            };
+
+            return View(employeeDto);
         }
 
 
