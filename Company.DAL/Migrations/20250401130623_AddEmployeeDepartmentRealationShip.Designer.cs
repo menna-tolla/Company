@@ -4,6 +4,7 @@ using Company.DAL.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Company.DAL.Migrations
 {
     [DbContext(typeof(CompanyDbContext))]
-    partial class CompanyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250401130623_AddEmployeeDepartmentRealationShip")]
+    partial class AddEmployeeDepartmentRealationShip
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,7 +106,7 @@ namespace Company.DAL.Migrations
             modelBuilder.Entity("Company.DAL.Models.Employee", b =>
                 {
                     b.HasOne("Company.DAL.Models.Department", "Department")
-                        .WithMany("Employees")
+                        .WithMany("employees")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -112,7 +115,7 @@ namespace Company.DAL.Migrations
 
             modelBuilder.Entity("Company.DAL.Models.Department", b =>
                 {
-                    b.Navigation("Employees");
+                    b.Navigation("employees");
                 });
 #pragma warning restore 612, 618
         }

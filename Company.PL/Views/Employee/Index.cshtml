@@ -6,6 +6,27 @@
 
 <h1>All Employee </h1>
 
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="m-3 alert alert-info">
+        <p>@TempData["Message"]</p>
+    </div>
+
+}
+
+
+<form>
+    <div class="container m-4">
+        <div class="row ">
+            <div class="col-6">
+                <input id="SearchInput" placeholder="Search" name="SearchInput" class="form-control" />
+            </div>
+            <div class="col-6">
+                <input type="submit" class="btn btn-success" value="Search" />
+            </div>
+        </div>
+    </div>
+</form>
 
 <br/>
 <br />
@@ -31,9 +52,9 @@
                 <th>Phone</th>
                 <th>IsActive</th>
                 <th>IsDeleted</th>
-                @* <th>@Html.DisplayFor(E=>E.Hi)</th> *@
                 <th>HiringDate</th>
                 <th>CreateAt</th>
+                <th>Department</th>
                 <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -55,6 +76,15 @@
                     <td>@item.IsDeleted</td>
                     <td>@item.HiringDate</td>
                     <td>@item.CreateAt</td>
+
+                    @if (item.Department is null)
+                    {
+                        <td>No Department</td>
+                    }
+                    else
+                    {
+                        <td>@item.Department.Name</td>
+                    }
 
                     <partial name="_ButtonPartialView" model="@item.Id" />
 

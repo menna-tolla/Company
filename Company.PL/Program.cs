@@ -1,6 +1,9 @@
 using Company.BLL.Interfaces;
 using Company.BLL.Repositores;
 using Company.DAL.Data.Contexts;
+using Company.PL.Mapping;
+using Company.PL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.PL
@@ -15,6 +18,31 @@ namespace Company.PL
             builder.Services.AddControllersWithViews();// Register Built-in MVC Services
             builder.Services.AddScoped<IDepartmentRepository , DepartmentRepository>(); //Allow ID For DepartmentRepository
             builder.Services.AddScoped<IEmplyeeRepository, EmplyeeRepository>(); //Allow ID For EmplyeeRepository
+
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile()));
+
+            //builder.Services.AddIdentity<AppUser, IdentityRole>()
+            //                 .AddEntityFrameworkStores<CompanyDbContext>()
+            //                 .AddDefaultTokenProviders();
+
+            // Life Time
+            //builder.Services.AddScoped();    // Create Object Life Per Request - UnReachable Object 
+            //builder.Services.AddTransient(); // Create Object Life Per Operation 
+            //builder.Services.AddSingleton(); // Create Object Life Per Application
+
+            builder.Services.AddScoped<IScopedService, ScopedService>(); // Per Request
+            builder.Services.AddTransient<ITransentService, TransentService>(); // Per Operation
+            builder.Services.AddSingleton<ISingletonService, SingletonService>(); // Per Application
+
+
+
+            //builder.Services.Configure<Mailsettings>(builder.Configuration.GetSection(nameof(Mailsettings)));
+            //builder.Services.AddScoped<IMailService, MailService>();
+            //builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
+            //builder.Services.AddTransient<ITwilioService, TwilioService>();
+
+
 
 
             builder.Services.AddDbContext<CompanyDbContext>(options =>
@@ -42,7 +70,6 @@ namespace Company.PL
             app.MapControllerRoute(
                 name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                    //pattern: "{controller=Department}/{action=Index}/{id?}");
 
 
             app.Run();

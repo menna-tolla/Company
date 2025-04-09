@@ -9,15 +9,8 @@ namespace Company.BLL.Interfaces
 {
     public interface IDepartmentRepository : IGenaricRepository <Department>
     {
-        //IEnumerable<Department> GetAll();
+        List<Department> GetByName(string name);
 
-        //Department? Get(int Id);
-
-        //int Add(Department model);
-
-        //int Update(Department model);
-
-        //int Delete(Department model);
 
     }
 }

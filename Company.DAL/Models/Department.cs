@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,11 @@ namespace Company.DAL.Models
         [Column("CreatAt")]
         public DateTime CreateAt { set; get; }
 
+        [Required]
         public string Code { set; get; }
+
+
+        public List<Employee> Employees { get; set; }
+
     }
 }

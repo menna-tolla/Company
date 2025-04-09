@@ -10,7 +10,8 @@
 <br />
 <form asp-action="Create">
 
-    <partial name="DepartmentPartialView/_CreateEditView" />
+    @* <partial name="DepartmentPartialView/_CreateEditView" /> *@
+    <partial name="DepartmentPartialView/_CreateEditView" model="Model" />
 
 
     <input type="submit" value="Create" class="btn btn-primary" />

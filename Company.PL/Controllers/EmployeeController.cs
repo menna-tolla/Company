@@ -1,4 +1,6 @@
-﻿using Company.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.BLL.Interfaces;
+using Company.BLL.Repositores;
 using Company.DAL.Models;
 using Company.PL.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +11,50 @@ namespace Company.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmplyeeRepository _emplyeeRepository;
+        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
 
         //Ask CLR Create Object From DepartmentRepository
-        public EmployeeController(IEmplyeeRepository emplyeeRepository)
+        public EmployeeController(
+            IEmplyeeRepository emplyeeRepository,
+            IDepartmentRepository departmentRepository,
+            IMapper mapper)
         {
             _emplyeeRepository = emplyeeRepository;
+            _departmentRepository = departmentRepository;
+            _mapper = mapper;
         }
 
         //----------------------Index-----------------------
 
         [HttpGet] // get 
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
-            var employee = _emplyeeRepository.GetAll();
+            IEnumerable<Employee> employees;
 
-            return View(employee);
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                employees = _emplyeeRepository.GetAll();
+            }
+            else
+            {
+                employees = _emplyeeRepository.GetByName(SearchInput);
+            }
+
+            // Dictionary   : 3 Property
+            // 1. ViewData  : Transfer Extra Information From Controller (Action) To View
+
+            //ViewData["Message"] = "Hello From ViewDat,a";
+
+            // 2. ViewBag   : Transfer Extra Information From Controller (Action) To View
+
+            //ViewBag.Massage = "Hello From ViewBag";
+
+            //ViewBag.Message = new { Message = "Hello From ViewBag" };
+
+            // 3. TempData  :
+
+            return View(employees);
         }
 
         //----------------------Create-----------------------
@@ -31,6 +62,9 @@ namespace Company.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var departments = _departmentRepository.GetAll();
+            ViewData["departments"] = departments;
+
             return View();
         }
 
@@ -40,30 +74,15 @@ namespace Company.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var employee = new Employee()
-                {
-                    Name = model.Name,
-                    Salary = model.Salary,
-                    Address = model.Address,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                    Age = model.Age,
-
-                    HiringDate = model.HiringDate,
-                    Phone = model.Phone,
-                    CreateAt = model.CreateAt,
-                    Email = model.Email,
-
-                };
-
+                var employee = _mapper.Map<Employee>(model);
                 var count = _emplyeeRepository.Add(employee);
 
                 if (count > 0)
                 {
+                    TempData["Message"] = "Employee is Created";
                     return RedirectToAction(nameof(Index));
                 }
             }
-
             return View(model);
         }
 
@@ -99,6 +118,9 @@ namespace Company.PL.Controllers
         [HttpGet] // get 
         public IActionResult Edit(int? id)
         {
+            var departments = _departmentRepository.GetAll();
+            ViewData["departments"] = departments;
+
             if (id is null) return BadRequest("InValilld Id");
 
             var employee = _emplyeeRepository.Get(id.Value);
@@ -125,14 +147,6 @@ namespace Company.PL.Controllers
         }
 
 
-        //[HttpGet] // get 
-        //public IActionResult Edit(int? id)
-        //{
-        //    return Details(id, "Edit");
-        //}
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model)
@@ -154,6 +168,7 @@ namespace Company.PL.Controllers
                 employee.IsDeleted = model.IsDeleted;
                 employee.CreateAt = model.CreateAt;
                 employee.Salary = model.Salary;
+                employee.DepartmentId = model.DepartmentId;
 
                 var count = _emplyeeRepository.Update(employee);
                 if (count > 0)
@@ -163,33 +178,6 @@ namespace Company.PL.Controllers
 
             }
             return View(model);
-            //var employee = new Employee()
-            //{
-            //    Id = id,
-            //    Name = model.Name,
-            //    Salary = model.Salary,
-            //    Address = model.Address,
-            //    IsActive = model.IsActive,
-            //    IsDeleted = model.IsDeleted,
-            //    Age = model.Age,
-
-            //    HiringDate = model.HiringDate,
-            //    Phone = model.Phone,
-            //    CreateAt = model.CreateAt,
-            //    Email = model.Email,
-
-            //};
-            //var count = _emplyeeRepository.Update(employee);
-
-            //if (ModelState.IsValid)
-            //{
-            //    if (count > 0)
-            //    {
-            //        return RedirectToAction(nameof(Index));
-            //    }
-            //}
-
-            //return View( employee);
         }
 
         //----------------------Delete-----------------------
@@ -215,20 +203,39 @@ namespace Company.PL.Controllers
 
 
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Delete([FromRoute] int id, Employee employee)
+        //{
+        //    if (id != employee.Id) return BadRequest();
+
+        //    var count = _emplyeeRepository.Delete(employee);
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (count > 0)
+        //        {
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //    }
+
+        //    return View(employee);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Employee employee)
+        public IActionResult Delete([FromRoute] int id)
         {
-            if (id != employee.Id) return BadRequest();
+            var employee = _emplyeeRepository.Get(id);
+
+            if (employee == null)
+                return NotFound();
 
             var count = _emplyeeRepository.Delete(employee);
 
-            if (ModelState.IsValid)
+            if (count > 0)
             {
-                if (count > 0)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
             }
 
             return View(employee);
